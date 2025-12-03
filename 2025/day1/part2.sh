@@ -11,35 +11,38 @@ while read -r instruction; do
 
 	length=$((${#instruction}-1))
 
-	amount="${instruction:1:length}"
-
-	scale_factor=$((1 + (amount / 100)))
-
-	echo "moving $dir by $amount"
-
-	prev_dial=$dial
+	amount="${instruction:1}"
 
 	if [[ $dir == 'L' ]]; then
-		new_dial=$((dial-amount))
-		((dial=((new_dial) + 100) % 100))
 
-		# we went around the dial at least once
-		if (( new_dial <= 0 && prev_dial != 0 )); then
-			echo "went around dial $scale_factor times"
-			((zero_count+=scale_factor))
-		fi
+		for (( i =  0; i < amount; i++)); do
+			(( dial -= 1 ))
+
+			if (( dial < 0 )); then
+				dial=99
+			fi
+
+			if (( dial == 0 )); then
+				(( zero_count++ ))
+			fi
+		done
 
 	elif [[ $dir == 'R' ]]; then
-		new_dial=$((dial+amount))
-		((dial=((new_dial) + 100) % 100))
-		# we went around the dial at least once
-		if (( new_dial >= 99 )); then
-			echo "went around dial $scale_factor times"
-			((zero_count+=scale_factor))
-		fi
+
+		for (( i =  0; i < amount; i++)); do
+			(( dial += 1 ))
+
+			if (( dial > 99 )); then
+				dial=0
+			fi
+
+			if (( dial == 0 )); then
+				(( zero_count++ ))
+			fi
+		done
+
 	fi
 
-	echo "Dial is now at $dial"
 done
 
 echo $zero_count
