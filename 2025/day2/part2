@@ -17,9 +17,9 @@ while read -r input; do
 			len=${#i}
 			half_len=$((len/2))
 
-			if (( len % 2 != 0 )); then
-				continue
-			fi
+			#if (( len % 2 != 0 )); then
+			#	continue
+			#fi
 
 			for (( j = 1; j <= half_len; j++ )); do
 				#current loop number does not divide number evenly
@@ -34,7 +34,8 @@ while read -r input; do
 					((section_counter+=j))
 				done
 
-				echo "sections: ${sections[@]}"
+				#echo "sections found for $i with $j sections: ${sections[@]}"
+
 			done
 
 			invalid=0
@@ -43,7 +44,10 @@ while read -r input; do
 				current_item="${sections[$k]}"
 				next_item="${sections[$next]}"
 
+				echo "checking $current_item against $next_item"
+
 				if [[ $current_item != $next_item ]]; then
+					echo "item $current_item is not equal to $next_item"
 					invalid=1
 					break
 				fi
