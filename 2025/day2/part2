@@ -22,7 +22,6 @@ while read -r input; do
 			fi
 
 			for (( j = 1; j <= half_len; j++ )); do
-				echo "checking option $j of $half_len for $i"
 				#current loop number does not divide number evenly
 				if (( len % j != 0 )); then
 					continue
@@ -30,22 +29,21 @@ while read -r input; do
 				
 				sections=()
 				section_counter=0
-				while (( section_counter <= ((len-j)) )); do
-					echo "(${i:section_counter:j})"
-
+				while (( section_counter <= ($len-$j) )); do
 					sections+=(${i:section_counter:j})
 					((section_counter+=j))
 				done
+
+				echo "sections: ${sections[@]}"
 			done
 
-			echo "sections for range: ${sections[@]}"
-
 			invalid=0
-			echo "${#sections[@]}"
-			for ((k=0; k<((${#sections[@]}-1)); k++)); do
+			for ((k=0; k<${#sections[@]}-1; k++)); do
 				next=$((k+1))
-				echo "${section[1]}"
-				if [[ ${sections[$k]} != ${section[$next]} ]]; then
+				current_item="${sections[$k]}"
+				next_item="${sections[$next]}"
+
+				if [[ $current_item != $next_item ]]; then
 					invalid=1
 					break
 				fi
@@ -64,4 +62,4 @@ for invalid_id in "${invalid_ids[@]}"; do
 	(( id_total += invalid_id ))
 done
 
-#echo "$id_total"
+echo "$id_total"
